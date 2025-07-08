@@ -103,6 +103,7 @@ model = get_peft_model(base_model, config)
 # 获取模型参与训练的参数，发现仅占总参数量的0.5%
 model.trainable_params()
 
+
 # Callback函数，随save_steps定义的步数保存LoRA adapter权重
 class SavePeftModelCallback(TrainerCallback):
     def on_save(
@@ -126,6 +127,7 @@ class SavePeftModelCallback(TrainerCallback):
         os.remove(base_model_path) if os.path.exists(base_model_path) else None
 
         return control
+
 
 # 训练超参
 args = TrainingArguments(

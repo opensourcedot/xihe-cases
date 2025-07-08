@@ -13,9 +13,11 @@ tokenizer = AutoTokenizer.from_pretrained("MindSpore-Lab/DeepSeek-R1-Distill-Qwe
 if tokenizer.pad_token is None:
     tokenizer.pad_token = tokenizer.eos_token
 model = AutoModelForCausalLM.from_pretrained("MindSpore-Lab/DeepSeek-R1-Distill-Qwen-1.5B-FP16", mirror="modelers")
-# model = PeftModel.from_pretrained(model, "./output/DeepSeek-R1-Distill-Qwen-1.5B/adapter_model_for_demo/") # adapter_model path
+# adapter_model path
+# model = PeftModel.from_pretrained(model, "./output/DeepSeek-R1-Distill-Qwen-1.5B/adapter_model_for_demo/")
 
 system_prompt = "你是一个智能聊天机器人，以最简单的方式回答用户问题"
+
 
 def build_input_from_chat_history(chat_history, msg: str):
     messages = [{'role': 'system', 'content': system_prompt}]

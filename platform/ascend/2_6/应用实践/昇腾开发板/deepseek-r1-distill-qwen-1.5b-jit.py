@@ -6,7 +6,7 @@ import time
 import numpy as np
 
 
-#开启O2级别的jit优化，开启图算融合
+# 开启O2级别的jit优化，开启图算融合
 mindspore.set_context(
     enable_graph_kernel=True,
     mode=mindspore.GRAPH_MODE,
@@ -42,7 +42,7 @@ def sample_top_p(probs, p=0.9):
     return next_token
 
 
-#该任务将使用DeepSeek-R1-Distill-Qwen-1.5B模型，对给定的prompt进行补齐
+# 该任务将使用DeepSeek-R1-Distill-Qwen-1.5B模型，对给定的prompt进行补齐
 prompts = [
     "请介绍一下自己。<think>",
     "My favorite all time favorite condiment is ketchup.",
@@ -57,13 +57,14 @@ model_id = "MindSpore-Lab/DeepSeek-R1-Distill-Qwen-1.5B-FP16"
 tokenizer = AutoTokenizer.from_pretrained(model_id, mirror="modelers")
 model = AutoModelForCausalLM.from_pretrained(model_id, low_cpu_mem_usage=True, mirror="modelers")
 
-#使用model.jit()将全图静态图化
+# 使用model.jit()将全图静态图化
 model.jit()
 
 inputs = tokenizer(prompts, return_tensors="ms", padding=True)
 set_pyboost(False)
 
-#使用@mindspore.jit装饰器封装模型推理函数
+
+# 使用@mindspore.jit装饰器封装模型推理函数
 @mindspore.jit(jit_config=mindspore.JitConfig(jit_syntax_level='STRICT'))
 def get_decode_one_tokens_logits(model, cur_token, input_pos, cache_position, past_key_values, temperature=TEMPERATURE, top_p=TOP_P):
     """单个token的解码函数，返回logits，可以使用jit进行优化"""
@@ -76,6 +77,7 @@ def get_decode_one_tokens_logits(model, cur_token, input_pos, cache_position, pa
         use_cache=True
     )[0]
     return logits
+
 
 def decode_one_tokens(model, cur_token, input_pos, cache_position, past_key_values, temperature=TEMPERATURE, top_p=TOP_P):
     """单个token的解码函数，由logits、温度和Top_p选择合适的token"""
